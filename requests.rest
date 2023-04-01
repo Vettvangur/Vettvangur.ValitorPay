@@ -1,0 +1,165 @@
+@apiKey = 
+@terminalId = 
+@agreementNumber = 
+
+POST https://uat.valitorpay.com/cardVerification
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+    "virtualCard": "4999994943990852",
+    "AuthenticationUrl": "https://webhook.site/efde5ae1-fe39-46da-9f29-ef0ad5601a64",
+    "cardholderDeviceType": "WWW",
+    "currency": "ISK",
+    "Amount": 0,
+    "terminalId": {{terminalId}},
+    "AgreementNumber": {{agreementNumber}},
+    "systemCalling": "Vettvangur 0.1-beta",
+}
+
+###
+
+POST https://uat.valitorpay.com/virtualCard/createVirtualCard
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+    "virtualCardNumber": "5999993919169399",
+    "systemCalling": "Vettvangur 0.1-beta",
+}
+
+###
+
+POST https://uat.valitorpay.com/virtualCard/createVirtualCard
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+    "cardNumber": "",
+    "expirationMonth": 8,
+    "expirationYear": 2026,
+    "Cvc": "",
+    "SubsequentTransactionType": "CardholderInitiatedCredentialOnFile",
+    "CardVerificationData":
+    {
+        "Cavv": "kAOeSf0/BqJWAgAAHXapBjUhy4QW",
+        "Xid": "8HLp5HTTUzkoZNhAdJXhhFGY5uM=",
+        "dsTransId": "cd89beff-e04b-4e31-bea7-73a091c5636b",
+        "mdStatus": 1,
+    },
+    "systemCalling": "Vettvangur 0.1-beta",
+    "terminalId": {{terminalId}},
+    "AgreementNumber": {{agreementNumber}},
+}
+
+###
+
+POST https://uat.valitorpay.com/payment/virtualCardPayment
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+    "Operation": "Auth",
+    "VirtualCardNumber": "7ec4c4bb-d8fc-498f-b46a-bf4a242ef297",
+    "Amount": 200000,
+    "currency": "ISK",
+    "systemCalling": "Vettvangur 0.1-beta",
+    "terminalId": {{terminalId}},
+    "AgreementNumber": {{agreementNumber}},
+    "scaExemption": "None"
+}
+
+### Cancel a previous capture by giving amount 0 and finalCapture true
+POST https://uat.valitorpay.com/payment/virtualCardPayment
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+    "Operation": "Capture",
+    "acquirerReferenceNumber": "105877",
+    "authorizationCode": "598483",
+    "VirtualCardNumber": "84d216de-2db5-43d5-a299-c45a0b2a9a92",
+    "Amount": 0,
+    "currency": "ISK",
+    "systemCalling": "Vettvangur 0.1-beta",
+    "terminalId": {{terminalId}},
+    "AgreementNumber": {{agreementNumber}},
+    "IsFinalCapture": true
+}
+
+###
+
+POST https://uat.valitorpay.com/payment/cardPayment
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+    "Operation": "Sale",
+    "TransactionType": "ECommerce",
+    "CardNumber": "2223000010246699",
+    "ExpirationMonth": 12,
+    "ExpirationYear": 2030,
+    "Cvc": "123",
+    "CardVerificationData":
+    {
+        "Cavv": "kA1Hja90rhaDCRECEKc0AEUAAAAA",
+        "Xid": "s58XlNnh1JDlzhJvV2KhENU7nQg=",
+        "mdStatus": 4,
+    },
+    "Amount": 200000,
+    "currency": "ISK",
+    "systemCalling": "Vettvangur 0.1-beta",
+}
+
+###
+
+POST https://uat.valitorpay.com/VirtualCard/GetVirtualCardData
+valitorpay-api-version: 2.0
+Authorization: APIKey {{apiKey}}
+Content-Type: application/json
+
+{
+"virtualCard": "2e41bc2c-6dab-4c62-be3c-010c70a2c4c6",
+"agreementNumber": null,
+"terminalId": null,
+"sponsoredMerchantId": null,
+"systemCalling": null
+}
+
+# flaedi midad vid CardholderInitiatedCredentialOnFile
+
+# minar sidur
+# cardVerification
+# virtualCard/createVirtualCard med 3dsecure og ds trans
+
+# fyrstu kaup, skra syndarkort i leidinni
+# cardVerification
+# payment/cardPayment 3d gogn og ds trans her
+# createVirtualCard !engin 3d gogn ekki neitt!, valitor graejar bakvid tjoldin verification
+
+# Aframhaldandi kaup hja v.v. sem er med syndarkort skrad
+# cardVerification
+# payment/virtualCardPayment 3d gogn og ds trans her
+
+# "merchantReferenceData": null, - gaeti verid gagnlegur fyrir rekjanleika f. Dominos, birtist i soguvef Valitor f. Dominos
+
+# MerchantInitiated flaedi notar aldrei 3ds - Alltaf a abyrgd Dominos
+
+# Sýndarkort í gömlu fyrirtækjagreiðslugátt Valitor
+# Getum translate'ad gomlu non-guid syndarkortin yfir i ValitorPay guid syndarkort med fallinu
+# virtualCard/GetVirtualCardData
+# Tharf ad passa her hvort syndarkortin endi sem merchantInitiated / cardholder initiated
+
+# sca exemption flaedid er floknara, getum thurft ad fara fram og til baka utfra akvednum gildum
+
+# Eftir fyrstu greidslu og syndarkortsskraningu kollum vid i virtualCardPayment med scaExemption flagginu
+# Ef það failar kollum við í cardVerification og svo aftur í virtualCardPayment
+
+# ValitorPay eru ekki eins sætir og Borgun, þeir redirecta alltaf þó nýja 3ds sé með
+# provisions fyrir lágar greiðslur þar sem þær flæða í gegn
