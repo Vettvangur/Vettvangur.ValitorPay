@@ -67,18 +67,16 @@ namespace Vettvangur.ValitorPay
 #endif
 
 #if NETCOREAPP
-        public static IApplicationBuilder UseValitorPay(
-            this IApplicationBuilder app,
+        public static IServiceCollection AddValitorPay(
+            this IServiceCollection services,
             Uri apiUrl,
             string apiKey
         )
         {
-            if (app == null)
+            if (services == null)
             {
-                throw new ArgumentNullException(nameof(app));
+                throw new ArgumentNullException(nameof(services));
             }
-
-            var services = app.ApplicationServices.GetService<IServiceCollection>();
 
             services.AddHttpClient<ValitorPayService>("ValitorPay", (sp, httpClient) =>
             {
@@ -97,7 +95,7 @@ namespace Vettvangur.ValitorPay
             services.AddSingleton<IValitorRetryPolicy, ValitorRetryPolicy>();
             services.AddTransient<ValitorPayService>();
 
-            return app;
+            return services;
         }
 #endif
     }
