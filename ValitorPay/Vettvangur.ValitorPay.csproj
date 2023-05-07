@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net461;net5.0</TargetFrameworks>
+        <TargetFrameworks Condition="'$(ExcludeNetFx)' == 'true'">net5.0</TargetFrameworks>
+        <TargetFrameworks Condition="'$(ExcludeNetFx)' != 'true'">net461;net5.0</TargetFrameworks>
         <AssemblyName>Vettvangur.ValitorPay</AssemblyName>
     </PropertyGroup>
 
